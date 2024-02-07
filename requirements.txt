@@ -1,0 +1,5 @@
+numpy
+pandas
+streamlit==1.31.0
+plotly
+st_pages
