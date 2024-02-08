@@ -2,17 +2,17 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-def seoul_sale(temp):
+def seoul_sale(house_gbn_nm):
     df_seoul = pd.read_csv('서울전체/df_서울.csv')
-    df_seoul = df_seoul.loc[df_seoul['주택유형'] == f'{temp}', :]
+    df_seoul = df_seoul.loc[df_seoul['주택유형'] == f'{house_gbn_nm}', :]
     df_seoul['계약년월'] = df_seoul['계약년월'].astype(str)
 
-    st.subheader(f'서울 월별 {temp} 매매 평균 가격')
+    st.subheader(f'서울 월별 {house_gbn_nm} 매매 평균 가격')
 
     fig = px.line(
         x=df_seoul['계약년월'].unique(),
         y=df_seoul.groupby('계약년월')['물건금액(만원)'].mean(),
-        labels={'x': '월', 'y': f'평균 {temp} 가격(만원)'},
+        labels={'x': '월', 'y': f'평균 {house_gbn_nm} 가격(만원)'},
         template='plotly_dark',
         line_shape='linear',
         width=800,
@@ -21,17 +21,17 @@ def seoul_sale(temp):
 
     fig.update_yaxes(tickformat=",d")
     st.plotly_chart(fig)
-def gimpo_sale(temp):
+def gimpo_sale(house_gbn_nm):
     df_gimpo = pd.read_csv('김포데이터/df_김포.csv')
-    df_gimpo = df_gimpo.loc[df_gimpo['주택유형'] == f'{temp}', :]
+    df_gimpo = df_gimpo.loc[df_gimpo['주택유형'] == f'{house_gbn_nm}', :]
     df_gimpo['계약년월'] = df_gimpo['계약년월'].astype(str)
 
-    st.subheader(f'김포 월별  {temp} 매매 평균 가격')
+    st.subheader(f'김포 월별  {house_gbn_nm} 매매 평균 가격')
     
     fig = px.line(
         x=df_gimpo['계약년월'].unique(),
         y=df_gimpo.groupby('계약년월')['거래금액(만원)'].mean(),
-        labels={'x': '월', 'y': f'평균 {temp} 가격(만원)'},
+        labels={'x': '월', 'y': f'평균 {house_gbn_nm} 가격(만원)'},
         template='plotly_dark',
         line_shape='linear',
         width=800,
@@ -39,9 +39,9 @@ def gimpo_sale(temp):
         markers=True, )
     fig.update_yaxes(tickformat=",d")
     st.plotly_chart(fig)
-def seoul_rent(temp, temp2):
+def seoul_rent(rent_gbn, house_gbn_nm):
     df = pd.read_csv('서울전체/seoul_all.csv', encoding='euc_kr')
-    df = df[(df['RENT_GBN'] == temp) & (df['HOUSE_GBN_NM'] == temp2)]
+    df = df[(df['RENT_GBN'] == rent_gbn) & (df['HOUSE_GBN_NM'] == house_gbn_nm)]
 
     df = df[['RENT_GTN', 'CNTRCT_DE']]
 
@@ -49,14 +49,14 @@ def seoul_rent(temp, temp2):
     monthly_data = df.groupby(df['CNTRCT_DE'].astype(str).str[:-2])['RENT_GTN'].mean().reset_index()
 
     # Streamlit 앱 시작
-    st.subheader(f'서울 월별 {temp2} {temp} 평균가격')
+    st.subheader(f'서울 월별 {house_gbn_nm} {rent_gbn} 평균가격')
 
     # 선 그래프 그리기
     fig = px.line(
         monthly_data,
         x='CNTRCT_DE',
         y='RENT_GTN',
-        labels={'CNTRCT_DE': '월', 'RENT_GTN': f'평균 {temp} 가격(만원)'},
+        labels={'CNTRCT_DE': '월', 'RENT_GTN': f'평균 {rent_gbn} 가격(만원)'},
         template='plotly_dark',  # Dark mode template
         line_shape='linear',  # Linear interpolation between points
         markers=True,  # Show markers on data points
@@ -70,13 +70,13 @@ def seoul_rent(temp, temp2):
     # Plotly 그래프를 Streamlit에 표시
     st.plotly_chart(fig)
 
-def gimpo_rent(temp, temp2):
+def gimpo_rent(rent_gbn, house_gbn_nm):
     df = pd.read_csv(f'김포데이터/gimpo_all2.csv')
 
-    st.subheader(f'김포 월별 {temp2} {temp} 평균가격')
+    st.subheader(f'김포 월별 {house_gbn_nm} {rent_gbn} 평균가격')
 
     # '전월세구분'이 '전세'이고 '주택유형'이 'temp2'인 행들만 필터링
-    df = df[(df['전월세구분'] == temp) & (df['주택유형'] == temp2)]
+    df = df[(df['전월세구분'] == rent_gbn) & (df['주택유형'] == house_gbn_nm)]
 
     # '계약년월'을 문자열로 변환 후 월 정보 추출
     df['year_month'] = df['계약년월'].astype(str)

@@ -3,9 +3,9 @@ import pandas as pd
 import plotly.express as px
 
 
-def get_increase(df,tmp):
+def get_increase(df,temp):
     sentence = ""
-    if tmp == "매매":
+    if temp == "매매":
         sentence ="거래금액(만원)"
     else:
         sentence = "보증금(만원)"
@@ -15,13 +15,13 @@ def get_increase(df,tmp):
     # '보증금(만원)' 열의 쉼표 제거하고 숫자로 변환
     df[f'{sentence}'] = df[f'{sentence}'].replace({',': ''}, regex=True).astype(float)
 
-    if tmp == "매매":
+    if temp == "매매":
         before_megaseoul = df[(df['계약년월'] <= '2023-09') & (df['계약년월'] >= '2023-06')]
         after_megaseoul = df[(df['계약년월'] <= '2024-01') & (df['계약년월'] >= '2023-10')]
     else:
     # 조건에 따라 데이터 필터링
-        before_megaseoul = df[(df['전월세구분'] == f'{tmp}') & (df['계약년월'] <= '2023-09') & (df['계약년월'] >= '2023-06')]
-        after_megaseoul = df[(df['전월세구분'] == f'{tmp}') & (df['계약년월'] <= '2024-01') & (df['계약년월'] >= '2023-10')]
+        before_megaseoul = df[(df['전월세구분'] == f'{temp}') & (df['계약년월'] <= '2023-09') & (df['계약년월'] >= '2023-06')]
+        after_megaseoul = df[(df['전월세구분'] == f'{temp}') & (df['계약년월'] <= '2024-01') & (df['계약년월'] >= '2023-10')]
 
     before_mean = before_megaseoul[f'{sentence}'].mean()
     after_mean = after_megaseoul[f'{sentence}'].mean()
@@ -31,10 +31,10 @@ def get_increase(df,tmp):
 
     return increase_rate
 
-def gimpo(tmp):
+def gimpo(temp):
     increase_rate = []
 
-    if tmp == "매매":
+    if temp == "매매":
         df = pd.read_csv('김포데이터/df_김포.csv')
         gimpo_apart = df[df['주택유형'] == '아파트']
         gimpo_officetels = df[df['주택유형'] == '오피스텔']
@@ -49,9 +49,9 @@ def gimpo(tmp):
 
     # '계약년월'을 datetime 형식으로 변환
 
-    increase_rate.append(get_increase(gimpo_apart, tmp))
-    increase_rate.append(get_increase(gimpo_officetels, tmp))
-    increase_rate.append(get_increase(gimpo_multi_complex, tmp))
+    increase_rate.append(get_increase(gimpo_apart, temp))
+    increase_rate.append(get_increase(gimpo_officetels, temp))
+    increase_rate.append(get_increase(gimpo_multi_complex, temp))
 
     print(increase_rate)
 
@@ -66,7 +66,7 @@ def gimpo(tmp):
         df_bar,
         x='Category',
         y='increase_rate',
-        title=f'메가서울 발표 이후 김포시 평균 {tmp} 가격 증가/감소율',
+        title=f'메가서울 발표 이후 김포시 평균 {temp} 가격 증가/감소율',
         labels={'Category': '구분', 'increase_rate': '증가율'},
         template='plotly_dark',  # Dark mode template
         width=800,  # Width of the plot
