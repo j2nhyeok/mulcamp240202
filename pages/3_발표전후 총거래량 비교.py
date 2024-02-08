@@ -194,6 +194,7 @@ def main():
         seoul_rent()
         st.write("-" * 50)
         gimpo_rent()
+        st.write('5ㅎ')
 
 if __name__ == '__main__':
     main()

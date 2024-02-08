@@ -3,7 +3,6 @@ import sqlite3
 import pandas as pd
 from datetime import datetime
 
-
 # SQLite 데이터베이스 연결
 conn = sqlite3.connect('게시판.db')
 cursor = conn.cursor()
@@ -29,19 +28,23 @@ submit_button = st.button('글 작성')
 
 # 글 작성 버튼이 눌렸을 때
 if submit_button:
-    # 현재 시간을 기록
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    if not author or not content:
+        st.warning("작성자나 내용을 모두 입력해주세요.")
+    else:
+        # 현재 시간을 기록
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # 작성된 글을 데이터베이스에 추가
-    cursor.execute('INSERT INTO posts (author, content, timestamp) VALUES (?, ?, ?)', (author, content, timestamp))
-    conn.commit()
+        # 작성된 글을 데이터베이스에 추가
+        cursor.execute('INSERT INTO posts (author, content, timestamp) VALUES (?, ?, ?)', (author, content, timestamp))
+        conn.commit()
 
-    if author == "관리자" and content == "글삭제":
-        conn.execute('Delete from posts ')
-    conn.commit()
-    # 작성자와 내용 초기화
-    author = ""
-    content = ""
+        if author == "관리자" and content == "글삭제":
+            conn.execute('Delete from posts ')
+            conn.commit()
+
+        # 작성자와 내용 초기화
+        author = ""
+        content = ""
 
 # 작성된 글 목록 표시
 st.subheader('작성된 글 목록')
