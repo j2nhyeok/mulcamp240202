@@ -35,7 +35,7 @@
 
 ## 데모페이지
 - Streamlit에서 구현한 Demo는 다음과 같습니다.
-  + https://myd5m9cfvui94skjzhvtsa.streamlit.app/
+  + https://teamminiproject-6qy4frxnwbz4ubp8dbhql7.streamlit.app/
 
  ## 주요 기능
  - 본 프로젝트에서 활용한 주요 메서드는 다음과 같습니다.
